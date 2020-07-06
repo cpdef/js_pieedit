@@ -49,7 +49,7 @@ body {font-family: Arial;}
           <textarea id="input" name="input" rows="45" cols="100" style="overflow:scroll;"></textarea>
           </br>
           <pre>
-use "#" to comment lines out.
+use "#" at the begin (first character!!) of the line to comment lines out.
 Comments in the POINTS and POLYGONS block
 will auto decrease the POINTS/POLYGONS number.
 Remove all comments before you save the .pie, because comments
@@ -57,7 +57,7 @@ are not supported in .pie files.
           </pre>
         </td>
         <td>
-          <img src="reload.png" alt="reload" onclick="reload_pie();displayTexture();update();">
+          <button style="background: url(reload.png); height:55px; width:55px;" onclick="reload_pie();displayTexture();update();"></button>
           </br>
 
           <div class="tab">
