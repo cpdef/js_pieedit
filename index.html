@@ -1,28 +1,93 @@
 <!DOCTYPE html>
 <html>
 <head>
+<style>
+body {font-family: Arial;}
+
+/* Style the tab */
+.tab {
+  overflow: hidden;
+  border: 1px solid #ccc;
+  background-color: #f1f1f1;
+}
+
+/* Style the buttons inside the tab */
+.tab button {
+  background-color: inherit;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  transition: 0.3s;
+  font-size: 17px;
+}
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+  background-color: #ddd;
+}
+
+/* Create an active/current tablink class */
+.tab button.active {
+  background-color: #ccc;
+}
+
+/* Style the tab content */
+.tabcontent {
+  display: none;
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  border-top: none;
+}
+</style>
 </head>
 <body>
     <table>
       <tr style="vertical-align:top">
         <td>
-          <textarea id="input" name="input" rows="400" cols="100"></textarea>
+          <textarea id="input" name="input" rows="45" cols="100" style="overflow:scroll;"></textarea>
+          </br>
+          <pre>
+use "#" to comment lines out.
+Comments in the POINTS and POLYGONS block
+will auto decrease the POINTS/POLYGONS number.
+Remove all comments before you save the .pie, because comments
+are not supported in .pie files.
+          </pre>
         </td>
         <td>
-          <canvas id="cnv" width="800" height="600"></canvas>
-          </br>
-          <button onclick="reload_pie();displayTexture();">
+          <button onclick="reload_pie();displayTexture();update();">
             reload
           </button>
           </br>
-          select texture:
-          </br>
-          <input type="radio" name="texture" value="File"> from file
-          <input type=file name=filename id=file> </br>
-          <input type="radio" name="texture" value="Github" checked="checked"> from github texpages </br>
-          <input type="radio" name="texture" value="URL"> from URL <input type="text" id="texture_URL" value="https://raw.githubusercontent.com/Warzone2100/data-texpages/15167b5a6b4e432feacaec987c744afca92da749/page-10-laboratories.png"> </br>
-          <button type=button onclick='draw_2d_polys()'>draw polys on texture</button>
-          <canvas id="cnv-texture" width="1024" height="1024"></canvas>
+
+          <div class="tab">
+            <button class="tablinks" onclick="openTab(event, '3d_view')" id="defaultOpen">3d View</button>
+            <button class="tablinks" onclick="openTab(event, 'Texture')">Texture</button>
+          </div>
+
+          <div id="3d_view" class="tabcontent">
+            <canvas id="cnv" width="800" height="600"></canvas>
+          </div>
+
+          <div id="Texture" class="tabcontent">
+            select texture:
+            </br>
+            <input type="radio" name="texture" value="File"> from file
+            <input type=file name=filename id=file> </br>
+            <input type="radio" name="texture" value="Github" checked="checked"> from github texpages </br>
+            <input type="radio" name="texture" value="URL"> from URL <input type="text" id="texture_URL" value="https://raw.githubusercontent.com/Warzone2100/data-texpages/15167b5a6b4e432feacaec987c744afca92da749/page-10-laboratories.png">
+            </br>
+            </br>
+            <button type=button onclick='draw_2d_polys()'>draw polys on texture</button>
+            </br>
+            </br>
+            <div style="overflow:scroll; height:600px;" >
+              <canvas id="cnv-texture" width="1024" height="1024"></canvas>
+            </div>
+          </div>
+
         </td>
       </tr>
     </table>
@@ -35,8 +100,24 @@
     <script type="text/javascript" src="engine.js"></script>
     <script type="text/javascript" src="pieload.js"></script>
     <script type="text/javascript" src="loadTexture.js"></script>
+    <script>
+      function openTab(evt, tabName) {
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tabcontent");
+        for (i = 0; i < tabcontent.length; i++) {
+          tabcontent[i].style.display = "none";
+        }
+        tablinks = document.getElementsByClassName("tablinks");
+        for (i = 0; i < tablinks.length; i++) {
+          tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+        document.getElementById(tabName).style.display = "block";
+        evt.currentTarget.className += " active";
+      }
+    </script>
     <script type="text/javascript">
       // init display
+      document.getElementById("defaultOpen").click();
       var client = new XMLHttpRequest();
       client.open('GET', 'https://raw.githubusercontent.com/cpdef/js_pieedit/master/default.pie');
       client.onreadystatechange = function() {

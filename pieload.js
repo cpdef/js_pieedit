@@ -16,12 +16,17 @@ function reload_pie() {
 	lines = text.split("\n");
 	for (var i=0; i < lines.length; i++)
 	{
+		var is_comment = false;
+		if (lines[i][0] === "#")
+			is_comment = true;
 		cols = lines[i].split(" ")
 		result_text += cols +";\n";
 		if (cols.length < 2)
 			continue;
 		if (block === "toplevel")
 		{
+			if (is_comment)
+				continue;
 			block = cols[0];
 			console.log(block);
 		}
@@ -53,6 +58,11 @@ function reload_pie() {
 				point = 0;
 				LEVELS[LEVEL].points = new Array();
 			} else {
+				if (is_comment)
+				{
+					POINTS--; // decrease point number, else it would break
+					continue;
+				}
 				LEVELS[LEVEL].points[point] = new Array(3);
 				for (var j=0; j < 3; j++)
 				{
@@ -70,6 +80,11 @@ function reload_pie() {
 				polygon = 0;
 				LEVELS[LEVEL].polygons = new Array();
 			} else {
+				if (is_comment)
+				{
+					POLYGONS--; // decrease poly number, else it would break
+					continue;
+				}
 				idx = 0;
 				// animation or normal?
 				flag = Number(cols[idx]);
