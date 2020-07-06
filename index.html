@@ -31,7 +31,7 @@
       window.PIE = 3;
       window.TEXTURE = ""
       var client = new XMLHttpRequest();
-      client.open('GET', 'https://htmlpreview.github.io/?https://raw.githubusercontent.com/cpdef/js_pieedit/master/default.pie');
+      client.open('GET', 'https://raw.githubusercontent.com/cpdef/js_pieedit/master/default.pie');
       client.onreadystatechange = function() {
         var textInput = document.getElementById('input');
         textInput.value = client.responseText;
