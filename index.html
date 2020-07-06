@@ -51,7 +51,7 @@
           if (value === "File")
             texture_from_file();
           else if (value === "Github")
-            texture_from_texpages();
+            texture_from_github();
           else if (value === "URL")
             texture_from_url();
           else
@@ -74,7 +74,7 @@
         var ctx = document.getElementById('cnv-texture').getContext('2d');
         //var image = document.getElementById('texture_image');
         var img = new Image();
-        img.src = "https://raw.githubusercontent.com/Warzone2100/data-texpages/15167b5a6b4e432feacaec987c744afca92da749/"+window.TEXTURE;
+        img.src = "https://raw.githubusercontent.com/Warzone2100/data-texpages/master/"+window.TEXTURE;
         img.onload = function () {
           ctx.drawImage(img, 0, 0);
         }
