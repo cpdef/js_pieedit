@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+<body>
+    <table>
+      <tr style="vertical-align:top">
+        <td>
+          <textarea id="input" name="input" rows="400" cols="100"></textarea>
+        </td>
+        <td>
+          <canvas id="cnv" width="800" height="600"></canvas>
+          <button onclick="reload_pie()">
+            reload
+          </button>
+          </br>
+          select texture:
+          </br>
+          <input type="radio" name="texture" value="File"> from file
+          <input type=file name=filename id=file> </br>
+          <input type="radio" name="texture" value="Github" checked="checked"> from github texpages </br>
+          <input type="radio" name="texture" value="URL"> from URL <input type="text" id="texture_URL" value="https://raw.githubusercontent.com/Warzone2100/data-texpages/15167b5a6b4e432feacaec987c744afca92da749/page-10-laboratories.png"> </br>
+          <button typebutton onclick='displayTexture()'>Display</button></br>
+          <button type=button onclick='draw_2d_polys()'>draw polys on texture</button>
+          <canvas id="cnv-texture" width="1024" height="1024"></canvas>
+        </td>
+      </tr>
+    </table>
+    <script type="text/javascript">
+      window.LEVELS = [{points:[], polygons: []}];
+      window.PIE = 3;
+      window.TEXTURE = ""
+      var client = new XMLHttpRequest();
+      client.open('GET', 'default.pie');
+      client.onreadystatechange = function() {
+        alert(client.responseText);
+        console.log(client.responseText);
+      }
+      client.send();
+    </script>
+    <script type="text/javascript" src="engine.js"></script>
+    <script type="text/javascript" src="pieload.js"></script>
+    <script>
+    function displayTexture() {
+      var radios = document.getElementsByName("texture");
+      for (var i = 0, length = radios.length; i < length; i++) {
+        if (radios[i].checked) {
+          var value = radios[i].value;
+          if (value === "File")
+            texture_from_file();
+          else if (value === "Github")
+            texture_from_texpages();
+          else if (value === "URL")
+            texture_from_url();
+          else
+            alert("not implemented yet!");
+        }
+      }
+    }
+    function texture_from_file() {
+        var ctx = document.getElementById('cnv-texture').getContext('2d');
+        var file = document.getElementById('file').files[0];
+        var img = new Image();
+        var reader  = new FileReader();
+        reader.onload = function(e)  {
+            img.src = e.target.result;
+            ctx.drawImage(img, 0, 0);
+         }
+         reader.readAsDataURL(file);
+    }
+    function texture_from_github() {
+        var ctx = document.getElementById('cnv-texture').getContext('2d');
+        //var image = document.getElementById('texture_image');
+        var img = new Image();
+        img.src = "https://raw.githubusercontent.com/Warzone2100/data-texpages/15167b5a6b4e432feacaec987c744afca92da749/"+window.TEXTURE;
+        img.onload = function () {
+          ctx.drawImage(img, 0, 0);
+        }
+    }
+    function texture_from_url() {
+        var ctx = document.getElementById('cnv-texture').getContext('2d');
+        var src = document.getElementById('texture_URL').value;
+        var img = new Image();
+        img.src = src;
+        img.onload = function () {
+          ctx.drawImage(img, 0, 0);
+        }
+    }
+    function draw_2d_polys() {
+        console.log("draw 2d polys")
+        var LEVELS = window.LEVELS;
+        var ctx = document.getElementById('cnv-texture').getContext('2d');
+        for (var level=0; level < LEVELS.length; level++)
+        {
+          var polygons = LEVELS[level].polygons;
+          for (var poly=0; poly < polygons.length; poly++)
+          {
+            var points = polygons[poly].texture_points;
+            var last_point = points[points.length-1];
+            var scale = 1024;
+            if (window.PIE === 2)
+              scale = 4;
+            ctx.beginPath();
+            ctx.moveTo(last_point[0]*scale, last_point[1]*scale);
+            for (var point=0;point < points.length; point++)
+              ctx.lineTo(points[point][0]*scale, points[point][1]*scale);
+            ctx.strokeStyle = '#ff00ff'
+            ctx.stroke();
+          }
+        }
+    }
+    </script>
+</body></html>
