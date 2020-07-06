@@ -33,8 +33,9 @@
       var client = new XMLHttpRequest();
       client.open('GET', 'default.pie');
       client.onreadystatechange = function() {
-        alert(client.responseText);
-        console.log(client.responseText);
+        var textInput = document.getElementsByName("input");
+        textInput.value = client.responseText;
+        //console.log(client.responseText);
       }
       client.send();
     </script>
