@@ -31,13 +31,14 @@
       window.PIE = 3;
       window.TEXTURE = ""
       var client = new XMLHttpRequest();
-      client.open('GET', 'default.pie');
+      client.open('GET', '/default.pie');
       client.onreadystatechange = function() {
-        var textInput = document.getElementById("input");
+        var textInput = document.getElementById('input');
         textInput.value = client.responseText;
         console.log(client.responseText);
       }
       client.send();
+      console.log("init finished");
     </script>
     <script type="text/javascript" src="engine.js"></script>
     <script type="text/javascript" src="pieload.js"></script>
