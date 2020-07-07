@@ -18,7 +18,7 @@ body {
 /* Style the buttons inside the tab */
 .tab button {
   background-color: inherit;
-  float: left;
+  float: right;
   border: none;
   outline: none;
   cursor: pointer;
@@ -41,18 +41,31 @@ body {
 .tabcontent {
   display: none;
   padding: 6px 12px;
-  border: 1px solid #ccc;
+/*  border: 1px solid #ccc; */
   border-top: none;
   background-color: #222222;
+  height: 90vh;
+}
+textarea {
+  overflow:scroll;
+  background-color: #222222;
+  color: #cccccc;
+  border: 10px solid #444;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 12px;
 }
 </style>
 </head>
 <body>
+    <div class="tab">
+      <button style="width:50%" width="50%"></button>
+      <button class="tablinks" onclick="openTab(event, '3d_view')" id="defaultOpen">3d View</button>
+      <button class="tablinks" onclick="openTab(event, 'Texture')">Texture</button>
+    </div>
     <table>
       <tr style="vertical-align:top">
         <td>
-          <textarea id="input" name="input" rows="45" cols="100" onkeyup="reload_pie();displayTexture();update();"
-                    style="overflow:scroll; background-color: #222222; color: #cccccc; font-family: 'Courier New', Courier, monospace; font-size: 12px;">
+          <textarea id="input" name="input" rows="45" cols="100" onkeyup="reload_pie();displayTexture();update();">
           </textarea>
           </br>
           <pre>
@@ -64,15 +77,10 @@ are not supported in .pie files.
           </pre>
         </td>
         <td>
-          <div class="tab">
-            <button class="tablinks" onclick="openTab(event, '3d_view')" id="defaultOpen">3d View</button>
-            <button class="tablinks" onclick="openTab(event, 'Texture')">Texture</button>
-          </div>
-
           <div id="3d_view" class="tabcontent">
             <table>
               <td>
-                <canvas id="cnv" width="800" height="600"></canvas>
+                <canvas id="cnv" style="border: 10px solid #444;"></canvas>
               </td>
               <td>
                 <button type=button onclick="update(-1, true)">Force Render</button></br></br>
@@ -87,7 +95,7 @@ are not supported in .pie files.
                 Rotation X </br>
                 <input type="range" min="0" max="100" value="0" class="slider" id="RotationX"> </br>
                 Rotation Y
-                <input type="checkbox" id="renderContinous" name="renderContinous" value="Texture"> 
+                <input type="checkbox" id="renderContinous" name="renderContinous" value="Texture" checked="checked">
                 contin. </br>
                 <input type="range" min="0" max="100" value="0" class="slider" id="RotationY"> </br>
               </td>
@@ -99,15 +107,15 @@ are not supported in .pie files.
             </br>
             <input type="radio" name="texture" value="File"> from file
             <input type=file name=filename id=file> </br>
-            <input type="radio" name="texture" value="Github" checked="checked"> from github texpages </br>
-            <input type="radio" name="texture" value="URL"> from URL <input type="text" id="texture_URL" value="https://raw.githubusercontent.com/Warzone2100/data-texpages/15167b5a6b4e432feacaec987c744afca92da749/page-10-laboratories.png">
+            <input type="radio" name="texture" value="Github"> from github texpages </br>
+            <input type="radio" name="texture" value="URL" checked="checked"> from URL <input type="text" id="texture_URL" value="https://raw.githubusercontent.com/cpdef/data-texpages/1ac3f754ecbee5fc0ae27ae422f1ff7f8a63f1fe/page-118-laboratories_nex.png">
             </br>
             </br>
             <button type=button onclick='displayTexture()'>Display</button>
             <button type=button onclick='draw_2d_polys()'>draw polys on texture</button>
             </br>
             </br>
-            <div style="overflow:scroll; height:100%;" >
+            <div style="overflow:scroll; height:70vh; border:10px solid #444;">
               <canvas id="cnv-texture" width="1024" height="1024"></canvas>
             </div>
           </div>

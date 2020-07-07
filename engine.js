@@ -1,5 +1,8 @@
 var cnv = document.getElementById("cnv"), ctx = cnv.getContext("2d");
-cnv.width = 800;  cnv.height = 600;
+var view_div = document.getElementById('3d_view');
+cnv.setAttribute("height", view_div.parentNode.clientHeight+"px");
+cnv.setAttribute("width", "800px");
+
 window.last_state = {
     zoom:0, rotationX:0, rotationy:0, edges:0,
     texture:0, grid:0, continous: 0
@@ -63,7 +66,7 @@ function update(dtime=0, force=false) {
 
   // initialize canvas
   ctx.fillStyle = "#000000";
-  ctx.fillRect(0, 0, 800, 600);
+  ctx.fillRect(0, 0, cnv.width, cnv.height);
 
   // reset z Buffer
   if (texture)
