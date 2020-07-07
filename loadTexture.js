@@ -3,6 +3,7 @@
       for (var i = 0, length = radios.length; i < length; i++) {
         if (radios[i].checked) {
           var value = radios[i].value;
+          console.log("load texture: ", value)
           if (value === "File")
             texture_from_file(polys);
           else if (value === "Github")
@@ -18,10 +19,12 @@
         var ctx = document.getElementById('cnv-texture').getContext('2d');
         var file = document.getElementById('file').files[0];
         var img = new Image();
+        img.crossOrigin = "anonymous";
         var reader  = new FileReader();
         reader.onload = function(e)  {
             img.src = e.target.result;
             ctx.drawImage(img, 0, 0);
+            window.TEX_DATA = ctx.getImageData(0, 0, 1023, 1023);
             if (polys)
               draw_2d_polys();
          }
@@ -31,9 +34,11 @@
         var ctx = document.getElementById('cnv-texture').getContext('2d');
         //var image = document.getElementById('texture_image');
         var img = new Image();
+        img.crossOrigin = "anonymous";
         img.src = "https://raw.githubusercontent.com/Warzone2100/data-texpages/master/"+window.TEXTURE;
         img.onload = function () {
           ctx.drawImage(img, 0, 0);
+          window.TEX_DATA = ctx.getImageData(0, 0, 1023, 1023);
           if (polys)
             draw_2d_polys();
         }
@@ -42,9 +47,11 @@
         var ctx = document.getElementById('cnv-texture').getContext('2d');
         var src = document.getElementById('texture_URL').value;
         var img = new Image();
+        img.crossOrigin = "anonymous";
         img.src = src;
         img.onload = function () {
           ctx.drawImage(img, 0, 0);
+          window.TEX_DATA = ctx.getImageData(0, 0, 1023, 1023);
           if (polys)
             draw_2d_polys();
         }

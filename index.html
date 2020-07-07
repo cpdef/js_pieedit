@@ -2,7 +2,11 @@
 <html>
 <head>
 <style>
-body {font-family: Arial;}
+body {
+  font-family: Arial;
+  background-color: #222222;
+  color: #ffffff;
+}
 
 /* Style the tab */
 .tab {
@@ -39,6 +43,7 @@ body {font-family: Arial;}
   padding: 6px 12px;
   border: 1px solid #ccc;
   border-top: none;
+  background-color: #222222;
 }
 </style>
 </head>
@@ -46,7 +51,9 @@ body {font-family: Arial;}
     <table>
       <tr style="vertical-align:top">
         <td>
-          <textarea id="input" name="input" rows="45" cols="100" style="overflow:scroll;"></textarea>
+          <textarea id="input" name="input" rows="45" cols="100" onkeyup="reload_pie();displayTexture();update();"
+                    style="overflow:scroll; background-color: #222222; color: #cccccc; font-family: 'Courier New', Courier, monospace; font-size: 12px;">
+          </textarea>
           </br>
           <pre>
 use "#" at the begin (first character!!) of the line to comment lines out.
@@ -57,19 +64,21 @@ are not supported in .pie files.
           </pre>
         </td>
         <td>
-          <button style="background: url(reload.png); height:55px; width:55px;" onclick="reload_pie();displayTexture();update();"></button>
-          </br>
-
           <div class="tab">
             <button class="tablinks" onclick="openTab(event, '3d_view')" id="defaultOpen">3d View</button>
             <button class="tablinks" onclick="openTab(event, 'Texture')">Texture</button>
           </div>
 
           <div id="3d_view" class="tabcontent">
+            <button type=button onclick="update(-1, true)">Force Render</button>
+            <input type="checkbox" id="edges" name="edges" value="Edges" checked="checked">
+            <label for="edges">Render Edges</label>
+            <input type="checkbox" id="texture" name="texture" value="Texture">
+            <label for="texture">Render Texture</label><br>
             <canvas id="cnv" width="800" height="600"></canvas>
           </div>
 
-          <div id="Texture" class="tabcontent">
+          <div id="Texture" class="tabcontent" >
             select texture:
             </br>
             <input type="radio" name="texture" value="File"> from file
@@ -78,10 +87,11 @@ are not supported in .pie files.
             <input type="radio" name="texture" value="URL"> from URL <input type="text" id="texture_URL" value="https://raw.githubusercontent.com/Warzone2100/data-texpages/15167b5a6b4e432feacaec987c744afca92da749/page-10-laboratories.png">
             </br>
             </br>
+            <button type=button onclick='displayTexture()'>Display</button>
             <button type=button onclick='draw_2d_polys()'>draw polys on texture</button>
             </br>
             </br>
-            <div style="overflow:scroll; height:600px;" >
+            <div style="overflow:scroll; height:100%;" >
               <canvas id="cnv-texture" width="1024" height="1024"></canvas>
             </div>
           </div>
@@ -94,6 +104,7 @@ are not supported in .pie files.
       window.LEVELS = [{points:[], polygons: []}];
       window.PIE = 3;
       window.TEXTURE = ""
+      window.TEX_DATA = {data:new Array(1024*1024*4), width:1024, height: 1024};
     </script>
     <script type="text/javascript" src="engine.js"></script>
     <script type="text/javascript" src="pieload.js"></script>

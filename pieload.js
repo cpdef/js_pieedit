@@ -85,14 +85,15 @@ function reload_pie() {
 					POLYGONS--; // decrease poly number, else it would break
 					continue;
 				}
+				var factor = 1024;
+				if (PIE === 2)
+				    factor = 4;
 				idx = 0;
 				// animation or normal?
 				flag = Number(cols[idx]);
 				idx++;
-				console.log(flag);
 				num_points = Number(cols[idx]);
 				idx++;
-				console.log(num_points);
 				var polygon_obj = {
 					point_order: new Array(num_points),
 					texture_points: new Array(num_points)
@@ -114,7 +115,7 @@ function reload_pie() {
 					idx++;
 					var y = Number(cols[idx]);
 					idx++;
-					polygon_obj.texture_points[j] = [x, y];
+					polygon_obj.texture_points[j] = [x*factor, y*factor];
 				}
 				LEVELS[LEVEL].polygons[polygon] = polygon_obj;
 				polygon++;
@@ -123,8 +124,6 @@ function reload_pie() {
 			}
 		}
 	}
-	console.log("PIE: "+PIE)
-	console.log("LEVELS: "+JSON.stringify(LEVELS))
 	window.LEVELS = LEVELS;
 	window.PIE = PIE;
 }
