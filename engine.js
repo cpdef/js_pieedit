@@ -8,7 +8,11 @@ function update(dtime=0, force=false) {
   var edges = document.getElementById("edges").checked;
   var texture = document.getElementById("texture").checked;
   if ((!texture) && (!edges))
+  {
+    ctx.fillStyle = "#000000";
+    ctx.fillRect(0, 0, 800, 600);
     return;
+  }
   if (!texture)
     texture_render_lock = false;
   if (texture_render_lock && (!force))
@@ -16,14 +20,12 @@ function update(dtime=0, force=false) {
   if (texture)
     texture_render_lock = true;
   var t=Date.now();
-  //var t = 1594068099951;
   var ang=t/500, s=Math.sin(ang), c=Math.cos(ang);
   var mat = [ 
       c,0,-s,0,
       0,1,0,100,
       s,0,c,400
   ];
-  //ctx.clearRect(0,0,800,600);
   ctx.fillStyle = "#000000";
   ctx.fillRect(0, 0, 800, 600);
   if (texture)
@@ -128,9 +130,6 @@ function lineFromLine(x1, y1, z1, x2, y2, z2, x3, y3, z3, t1, t2, t3)
   var tdy = ty2-ty1;
   var fact = tdx/dx;
   var off = tx1-(fact*x1);
-//  console.log("ll", x1, ",", y1, ",", x2, ",", y2, ",", x3, ",", y3, t1, t2, t3);
-//  console.log(dx, dy, tdx, tdy, fact, off);
-  console.log("ll z:", dx, dz, z1, z2, z3);
   for (var x=x1; x <= x2; x+=1)
   {
     var y = y1 + dy * (x - x1) / dx;
@@ -166,8 +165,6 @@ function drawLine(x1, y1, z1, x2, y2, z2, tx1, ty1, tx2, ty2)
   var tdy = ty2-ty1;
   var fact = tdx/dx;
   var off = tx1-(fact*x1);
-  //console.log("line", x1, y1, x2, y2, tx1, ty1, tx2, ty2);
-  //console.log(dx, dz, z1, z2);
   for (var x=x1; x <= x2; x+=0.5)
   {
     var y = y1 + dy * (x - x1) / dx;
@@ -184,25 +181,16 @@ function drawPoint(x, y, z, tx, ty) {
   y = Math.round(y);
   var zidx = y*cnv.width+x;
   var bz = window.ZBuffer[zidx];
-  //z = z % 255;
-  //var color = "rgba(255,"+z+",0,1)";
-  //console.log(x, y, z);
-  //console.log(window.ZBuffer[x][y]);
   if (bz === "-")
   {
-    //console.log("zbuffer empty", x, y);
     window.ZBuffer[zidx] = z;
   }
   else if (bz > z)
   {
-    //console.log("zbuffer less", x, y);
     window.ZBuffer[zidx] = z;
   }
-//  else if (window.ZBuffer[x][y] < z)
-//    return;
   else
   {
-    //console.log(z, bz, zidx, window.ZBuffer[zidx], x, y);
     return;
   }
   ctx.strokeStyle = color;
