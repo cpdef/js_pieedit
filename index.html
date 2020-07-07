@@ -47,6 +47,13 @@ body {
   height: 90vh;
   width: 100%;
 }
+
+iframe {
+  overflow:hidden;
+  background-color: #ffffff;
+  color: #111111;
+}
+
 textarea {
   overflow:scroll;
   background-color: #222222;
@@ -122,9 +129,9 @@ are not supported in .pie files.
             </div>
           </div>
           <div id="Doc" class="tabcontent">
-            <div style="overflow:scroll; height:70vh; width:100%; border:10px solid #444;">
-              <iframe src="https://github.com/Warzone2100/warzone2100/blob/master/doc/PIE.md" title="PIE.md" width=1000px height=1000px allowfullscreen></iframe>
-            </div>
+              <div style="overflow:scroll; height:70vh; width: 50vw; border:10px solid #444;">
+                <iframe src="PIE_md.html" title="PIE.md" width=1000px height=10000px allowfullscreen scrolling="no"></iframe>
+              </div>
           </div>
 
         </td>
