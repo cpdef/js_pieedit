@@ -45,6 +45,7 @@ body {
   border-top: none;
   background-color: #222222;
   height: 90vh;
+  width: 100%;
 }
 textarea {
   overflow:scroll;
@@ -58,9 +59,10 @@ textarea {
 </head>
 <body>
     <div class="tab">
-      <button style="width:50%" width="50%"></button>
-      <button class="tablinks" onclick="openTab(event, '3d_view')" id="defaultOpen">3d View</button>
+      <button style="width:40%" width="50%"></button>
+      <button class="tablinks" onclick="openTab(event, 'Doc')">Doc</button>
       <button class="tablinks" onclick="openTab(event, 'Texture')">Texture</button>
+      <button class="tablinks" onclick="openTab(event, '3d_view')" id="defaultOpen">3d View</button>
     </div>
     <table>
       <tr style="vertical-align:top">
@@ -117,6 +119,11 @@ are not supported in .pie files.
             </br>
             <div style="overflow:scroll; height:70vh; border:10px solid #444;">
               <canvas id="cnv-texture" width="1024" height="1024"></canvas>
+            </div>
+          </div>
+          <div id="Doc" class="tabcontent">
+            <div style="overflow:scroll; height:70vh; width:100%; border:10px solid #444;">
+              <iframe src="https://github.com/Warzone2100/warzone2100/blob/master/doc/PIE.md" title="PIE.md" width=1000px height=1000px allowfullscreen></iframe>
             </div>
           </div>
 
