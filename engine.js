@@ -5,8 +5,8 @@ var texture_render_lock = false;
 update();
 
 function update(dtime=0, force=false) {
-  var edges = document.getElementById("edges").checked;
-  var texture = document.getElementById("texture").checked;
+  var edges = document.getElementById("renderEdges").checked;
+  var texture = document.getElementById("renderTexture").checked;
   if ((!texture) && (!edges))
   {
     ctx.fillStyle = "#000000";
