@@ -1,4 +1,7 @@
     function displayTexture(polys=false) {
+      var ctx_tex = document.getElementById('cnv-texture').getContext('2d');
+      ctx_tex.fillStyle = "#000000";
+      ctx_tex.fillRect(0, 0, 1024, 1024);
       var radios = document.getElementsByName("texture");
       for (var i = 0, length = radios.length; i < length; i++) {
         if (radios[i].checked) {
@@ -59,7 +62,7 @@
     function draw_2d_polys() {
         console.log("draw 2d polys")
         var LEVELS = window.LEVELS;
-        var ctx = document.getElementById('cnv-texture').getContext('2d');
+        var ctx_tex = document.getElementById('cnv-texture').getContext('2d');
         for (var level=0; level < LEVELS.length; level++)
         {
           var polygons = LEVELS[level].polygons;
@@ -67,15 +70,12 @@
           {
             var points = polygons[poly].texture_points;
             var last_point = points[points.length-1];
-            var scale = 1024;
-            if (window.PIE === 2)
-              scale = 4;
-            ctx.beginPath();
-            ctx.moveTo(last_point[0]*scale, last_point[1]*scale);
+            ctx_tex.beginPath();
+            ctx_tex.moveTo(last_point[0], last_point[1]);
             for (var point=0;point < points.length; point++)
-              ctx.lineTo(points[point][0]*scale, points[point][1]*scale);
-            ctx.strokeStyle = '#ff00ff'
-            ctx.stroke();
+              ctx_tex.lineTo(points[point][0], points[point][1]);
+            ctx_tex.strokeStyle = '#ff00ff'
+            ctx_tex.stroke();
           }
         }
     }

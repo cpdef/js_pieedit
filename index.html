@@ -70,12 +70,28 @@ are not supported in .pie files.
           </div>
 
           <div id="3d_view" class="tabcontent">
-            <button type=button onclick="update(-1, true)">Force Render</button>
-            <input type="checkbox" id="renderEdges" name="renderEdges" value="Edges" checked="checked">
-            <label for="edges">Render Edges</label>
-            <input type="checkbox" id="renderTexture" name="renderTexture" value="Texture">
-            <label for="texture">Render Texture</label><br>
-            <canvas id="cnv" width="800" height="600"></canvas>
+            <table>
+              <td>
+                <canvas id="cnv" width="800" height="600"></canvas>
+              </td>
+              <td>
+                <button type=button onclick="update(-1, true)">Force Render</button></br></br>
+                <input type="checkbox" id="renderEdges" name="renderEdges" value="Edges" checked="checked">
+                <label for="edges">Render Edges</label></br>
+                <input type="checkbox" id="renderGrid" name="renderGrid" value="Texture" checked="checked">
+                <label for="texture">Render Grid</label></br>
+                <input type="checkbox" id="renderTexture" name="renderTexture" value="Texture">
+                <label for="texture">Render Texture</label></br></br>
+                Zoom </br>
+                <input type="range" min="0" max="100" value="50" class="slider" id="Zoom"> </br>
+                Rotation X </br>
+                <input type="range" min="0" max="100" value="0" class="slider" id="RotationX"> </br>
+                Rotation Y
+                <input type="checkbox" id="renderContinous" name="renderContinous" value="Texture"> 
+                contin. </br>
+                <input type="range" min="0" max="100" value="0" class="slider" id="RotationY"> </br>
+              </td>
+            </table>
           </div>
 
           <div id="Texture" class="tabcontent" >

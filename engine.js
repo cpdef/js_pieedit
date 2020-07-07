@@ -1,46 +1,117 @@
 var cnv = document.getElementById("cnv"), ctx = cnv.getContext("2d");
 cnv.width = 800;  cnv.height = 600;
-var texture_render_lock = false;
+window.last_state = {
+    zoom:0, rotationX:0, rotationy:0, edges:0,
+    texture:0, grid:0, continous: 0
+}
 
 update();
 
 function update(dtime=0, force=false) {
   var edges = document.getElementById("renderEdges").checked;
   var texture = document.getElementById("renderTexture").checked;
-  if ((!texture) && (!edges))
+  var grid = document.getElementById("renderGrid").checked;
+  var continous = document.getElementById("renderContinous").checked;
+  var zoom =  document.getElementById("Zoom").value;
+  var rotationX =  document.getElementById("RotationX").value;
+  var rotationY =  document.getElementById("RotationY").value;
+
+  if (!force && !continous)
   {
-    ctx.fillStyle = "#000000";
-    ctx.fillRect(0, 0, 800, 600);
-    return;
+    // don't render if last state was the same
+    if (   (zoom === window.last_state.zoom)
+        && (rotationX === window.last_state.rotationX)
+        && (rotationY === window.last_state.rotationY)
+        && (edges === window.last_state.edges)
+        && (texture === window.last_state.texture)
+        && (grid === window.last_state.grid)
+        && (continous === window.last_state.continous)
+    )
+    {
+      window.requestAnimationFrame(update);
+      return;
+    }
+    window.last_state.zoom = zoom;
+    window.last_state.rotationX = rotationX;
+    window.last_state.rotationY = rotationY;
+    window.last_state.texture = texture;
+    window.last_state.edges = edges;
+    window.last_state.grid = grid;
+    window.last_state.continous = continous;
   }
-  if (!texture)
-    texture_render_lock = false;
-  if (texture_render_lock && (!force))
-    return;
-  if (texture)
-    texture_render_lock = true;
-  var t=Date.now();
-  var ang=t/500, s=Math.sin(ang), c=Math.cos(ang);
-  var mat = [ 
-      c,0,-s,0,
-      0,1,0,100,
-      s,0,c,400
+
+  // set viewmatrix
+  if (continous)
+  {
+      var t=Date.now();
+      rotationY = t/100;
+      document.getElementById("RotationY").value = rotationY % 100;
+  }
+
+  var angy=rotationY*(Math.PI/50), sy=Math.sin(angy), cy=Math.cos(angy);
+  var angx = rotationX*(Math.PI/50), cx = Math.cos(angx), sx = Math.sin(angx);
+  var z = zoom/70;
+
+  // yes that is rotation and scale magic
+  var mat = [
+      z*cy, z*-sy*sx, z*-sy*cx,     0,
+         0,     z*cx,    z*-sx,   100,
+      z*sy,  z*cy*sx,  z*cy*cx,   400
   ];
+
+  // initialize canvas
   ctx.fillStyle = "#000000";
   ctx.fillRect(0, 0, 800, 600);
+
+  // reset z Buffer
   if (texture)
     clearZBuffer();
+
+  // draw
+  console.log("render");
+  if (grid)
+    drawGrid(mat);
   for (var level=0; level < LEVELS.length; level++)
   {
     draw(window.LEVELS[level].points, window.LEVELS[level].polygons, mat, edges, texture);
   }
-  window.requestAnimationFrame(update);
+
+  // continue the animation
+  if (texture)
+  {
+    setTimeout(function() {
+      window.requestAnimationFrame(update);
+    }, 1000 / 3);
+  } else {
+    window.requestAnimationFrame(update);
+  }
 }
 
-function clearZBuffer()
+function drawGrid(m)
 {
-  window.ZBuffer = new Array(cnv.width*cnv.height).fill("-");
-  console.log("ZBuffer clear: ", window.ZBuffer[10*cnv.width+10]);
+  var lines = [];
+  var choose_red = false;
+  for (var i=0;i<1000;i+=100)
+  {
+    var color = "#444444";
+    if (choose_red)
+      color = "#552222";
+    lines.push([vertexShader(0, i, 0, m), vertexShader(0, i+100, 0, m), color]);
+    lines.push([vertexShader(i, 0, 0, m), vertexShader(i+100, 0, 0, m), color]);
+    lines.push([vertexShader(0, 0, i, m), vertexShader(0, 0, i+100, m), color]);
+    lines.push([vertexShader(0, -i, 0, m), vertexShader(0, -i-100, 0, m), color]);
+    lines.push([vertexShader(-i, 0, 0, m), vertexShader(-i-100, 0, 0, m), color]);
+    lines.push([vertexShader(0, 0, -i, m), vertexShader(0, 0, -i-100, m), color]);
+    choose_red = (!choose_red);
+  }
+  ctx.strokeStyle = '#444444';
+  ctx.lineWidth = 3;
+  for (var i=0;i<lines.length;i++)
+  {
+    ctx.strokeStyle = lines[i][2];
+    fragmentShaderGridEdge(lines[i][0], lines[i][1]);
+  }
+  ctx.lineWidth = 1;
 }
 
 function draw(ps, polygons, m, edges=true, texture=false) {
@@ -58,7 +129,10 @@ function draw(ps, polygons, m, edges=true, texture=false) {
     if (texture)
       fragmentShaderTexture(a,b,c,tp[0],tp[1],tp[2]);
     if (edges)
-      fragmentShader(a,b,c);
+    {
+      ctx.strokeStyle = '#33cc00';
+      fragmentShaderEdges(a,b,c);
+    }
   }
 }
 
@@ -70,27 +144,38 @@ function vertexShader(x,y,z, m) {
 }
 
 // you can make a Z-buffer, sampling from texture, phong shading...
-function fragmentShader(a,b,c) {
+function fragmentShaderEdges(a,b,c) {
   offx = 400;
-  offy = 300;
-  var x0=offx+300*a[0]/a[2], y0=offy+300*a[1]/a[2];
-  var x1=offx+300*b[0]/b[2], y1=offy+300*b[1]/b[2];
-  var x2=offx+300*c[0]/c[2], y2=offy+300*c[1]/c[2];
+  offy = 200;
+  var x0=offx+1000*a[0]/a[2], y0=offy+1000*a[1]/a[2];
+  var x1=offx+1000*b[0]/b[2], y1=offy+1000*b[1]/b[2];
+  var x2=offx+1000*c[0]/c[2], y2=offy+1000*c[1]/c[2];
   // we should loop through all pixels of a 2D triangle ...
   // but we just stroke its outline
-  ctx.strokeStyle = '#33cc00';
   ctx.beginPath();
     ctx.moveTo(x0,y0);  ctx.lineTo(x1,y1);  ctx.lineTo(x2,y2);
   ctx.closePath();
   ctx.stroke();
 }
 
+function fragmentShaderGridEdge(a,b) {
+  offx = 400;
+  offy = 200;
+  var x0=offx+1000*a[0]/a[2], y0=offy+1000*a[1]/a[2];
+  var x1=offx+1000*b[0]/b[2], y1=offy+1000*b[1]/b[2];
+  if ((a[2] < 0) || (b[2]<0))
+    return;
+  ctx.beginPath();
+    ctx.moveTo(x0,y0);  ctx.lineTo(x1,y1);
+  ctx.stroke();
+}
+
 function fragmentShaderTexture(a,b,c,ta,tb,tc) {
   offx = 400;
-  offy = 300;
-  var x0=offx+300*a[0]/a[2], y0=offy+300*a[1]/a[2], z0 = a[2];
-  var x1=offx+300*b[0]/b[2], y1=offy+300*b[1]/b[2], z1 = b[2];
-  var x2=offx+300*c[0]/c[2], y2=offy+300*c[1]/c[2], z2 = c[2];
+  offy = 200;
+  var x0=offx+1000*a[0]/a[2], y0=offy+1000*a[1]/a[2], z0 = a[2];
+  var x1=offx+1000*b[0]/b[2], y1=offy+1000*b[1]/b[2], z1 = b[2];
+  var x2=offx+1000*c[0]/c[2], y2=offy+1000*c[1]/c[2], z2 = c[2];
 
 
   lineFromLine(x0, y0, z0, x1, y1, z1, x2, y2, z2, ta, tb, tc);
@@ -108,20 +193,12 @@ function lineFromLine(x1, y1, z1, x2, y2, z2, x3, y3, z3, t1, t2, t3)
   ty2 = t2[1];
   tx3 = t3[0];
   ty3 = t3[1];
+  var start = x1;
+  var stop = x2;
   if (x2 < x1)
   {
-    var tmpx = x2;
-    x2 = x1;
-    x1 = tmpx;
-    var tmpy = y2;
-    y2 = y1;
-    y1 = tmpy;
-    var tmptx = tx2;
-    tx2 = tx1;
-    tx1 = tmptx;
-    var tmpty = ty2;
-    ty2 = ty1;
-    ty1 = tmpty;
+    start = x2;
+    stop = x1;
   }
   var dx = x2 - x1;
   var dy = y2 - y1;
@@ -130,7 +207,7 @@ function lineFromLine(x1, y1, z1, x2, y2, z2, x3, y3, z3, t1, t2, t3)
   var tdy = ty2-ty1;
   var fact = tdx/dx;
   var off = tx1-(fact*x1);
-  for (var x=x1; x <= x2; x+=1)
+  for (var x=start; x <= stop; x+=0.3)
   {
     var y = y1 + dy * (x - x1) / dx;
     var z = z1 + dz * (x - x1) / dx;
@@ -143,20 +220,12 @@ function lineFromLine(x1, y1, z1, x2, y2, z2, x3, y3, z3, t1, t2, t3)
 
 function drawLine(x1, y1, z1, x2, y2, z2, tx1, ty1, tx2, ty2)
 {
+  var start = x1;
+  var stop = x2;
   if (x2 < x1)
   {
-    var tmpx = x2;
-    x2 = x1;
-    x1 = tmpx;
-    var tmpy = y2;
-    y2 = y1;
-    y1 = tmpy;
-    var tmptx = tx2;
-    tx2 = tx1;
-    tx1 = tmptx;
-    var tmpty = ty2;
-    ty2 = ty1;
-    ty1 = tmpty;
+    start = x2;
+    stop = x1;
   }
   var dx = x2 - x1;
   var dy = y2 - y1;
@@ -165,7 +234,7 @@ function drawLine(x1, y1, z1, x2, y2, z2, tx1, ty1, tx2, ty2)
   var tdy = ty2-ty1;
   var fact = tdx/dx;
   var off = tx1-(fact*x1);
-  for (var x=x1; x <= x2; x+=0.5)
+  for (var x=start; x <= stop; x+=0.3)
   {
     var y = y1 + dy * (x - x1) / dx;
     var z = z1 + dz * (x - x1) / dx;
@@ -232,4 +301,10 @@ function drawZBuffer() {
       ctx.stroke();
     }
   }
+}
+
+function clearZBuffer()
+{
+  window.ZBuffer = new Array(cnv.width*cnv.height).fill("-");
+  console.log("ZBuffer clear: ", window.ZBuffer[10*cnv.width+10]);
 }
