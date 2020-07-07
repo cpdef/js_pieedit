@@ -45,6 +45,8 @@ function update(dtime=0, force=false) {
   {
       var t=Date.now();
       rotationY = t/100;
+      if (texture)
+        rotationY = t/500;
       document.getElementById("RotationY").value = rotationY % 100;
   }
 
