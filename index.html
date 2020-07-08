@@ -74,7 +74,7 @@ textarea {
     <table>
       <tr style="vertical-align:top">
         <td>
-          <textarea id="input" name="input" rows="45" cols="100" onkeyup="reload_pie();displayTexture();update();">
+          <textarea id="input" name="input" rows="45" cols="100" onkeyup="reload_pie();update();">
           </textarea>
           </br>
           <pre>
@@ -92,18 +92,17 @@ are not supported in .pie files.
                 <canvas id="cnv" style="border: 10px solid #444;"></canvas>
               </td>
               <td>
-                <button type=button onclick="update(-1, true)">Force Render</button></br></br>
-                <input type="checkbox" id="renderEdges" name="renderEdges" value="Edges" checked="checked">
+                <input type="checkbox" id="renderEdges" name="renderEdges" value="Edges" checked="checked" onclick="update()">
                 <label for="edges">Render Edges</label></br>
-                <input type="checkbox" id="renderGrid" name="renderGrid" value="Texture" checked="checked">
+                <input type="checkbox" id="renderGrid" name="renderGrid" value="Texture" checked="checked" onclick="update()">
                 <label for="texture">Render Grid</label></br>
-                <input type="checkbox" id="renderTexture" name="renderTexture" value="Texture">
+                <input type="checkbox" id="renderTexture" name="renderTexture" value="Texture" onclick="update()">
                 <label for="texture">Render Texture</label></br></br>
                 Zoom </br>
                 <input type="range" min="0" max="100" value="50" class="slider" id="Zoom"> </br>
-                Rotation X </br>
+                Rotation Vertical </br>
                 <input type="range" min="0" max="100" value="0" class="slider" id="RotationX"> </br>
-                Rotation Y
+                Rotation Hor.
                 <input type="checkbox" id="renderContinous" name="renderContinous" value="Texture" checked="checked">
                 contin. </br>
                 <input type="range" min="0" max="100" value="0" class="slider" id="RotationY"> </br>
@@ -137,12 +136,14 @@ are not supported in .pie files.
         </td>
       </tr>
     </table>
+    <script type="text/javascript" src="three.js"></script>
     <script type="text/javascript">
       // all global vars here initialized:
       window.LEVELS = [{points:[], polygons: []}];
       window.PIE = 3;
       window.TEXTURE = ""
       window.TEX_DATA = {data:new Array(1024*1024*4), width:1024, height: 1024};
+      window.THREETEX = new THREE.Texture();
     </script>
     <script type="text/javascript" src="engine.js"></script>
     <script type="text/javascript" src="pieload.js"></script>

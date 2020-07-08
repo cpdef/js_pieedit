@@ -22,14 +22,16 @@
         var ctx = document.getElementById('cnv-texture').getContext('2d');
         var file = document.getElementById('file').files[0];
         var img = new Image();
-        img.crossOrigin = "anonymous";
+//        img.crossOrigin = "anonymous";
+        window.THREETEX.image = img;
         var reader  = new FileReader();
         reader.onload = function(e)  {
             img.src = e.target.result;
             ctx.drawImage(img, 0, 0);
-            window.TEX_DATA = ctx.getImageData(0, 0, 1023, 1023);
-            if (polys)
-              draw_2d_polys();
+            //window.TEX_DATA = ctx.getImageData(0, 0, 1023, 1023);
+            window.THREETEX.needsUpdate = true;
+            //if (polys)
+            //  draw_2d_polys();
          }
          reader.readAsDataURL(file);
     }
@@ -52,9 +54,11 @@
         var img = new Image();
         img.crossOrigin = "anonymous";
         img.src = src;
+        window.THREETEX.image = img;
         img.onload = function () {
           ctx.drawImage(img, 0, 0);
           window.TEX_DATA = ctx.getImageData(0, 0, 1023, 1023);
+          window.THREETEX.needsUpdate = true;
           if (polys)
             draw_2d_polys();
         }
