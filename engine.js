@@ -51,7 +51,6 @@ var animate = function() {
   camera.position.x = zoom * 5 * Math.cos( angy ) * Math.sin( angx );
   camera.position.z = zoom * 5 * Math.sin( angy ) * Math.sin( angx );
   camera.position.y = 100 + zoom * 5 * Math.cos( angx );
-  console.log(pos);
   camera.lookAt(pos);
 
   requestAnimationFrame(animate);
