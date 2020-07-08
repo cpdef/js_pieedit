@@ -66,6 +66,16 @@ function update()
     var edges = document.getElementById("renderEdges").checked;
     var texture = document.getElementById("renderTexture").checked;
     var grid = document.getElementById("renderGrid").checked;
+
+    if (grid && (window.engine.grid === undefined))
+    {
+      window.engine.grid = new THREE.GridHelper(1000, 10);
+      window.engine.scene.add(window.engine.grid);
+    } else if (!grid && (window.engine.grid != undefined))
+    {
+      window.engine.scene.remove(window.engine.grid);
+      window.engine.grid = undefined;
+    }
     var materialTexture = new THREE.MeshBasicMaterial({
       map: window.THREETEX,
       side: THREE.DoubleSide,

@@ -101,7 +101,7 @@ are not supported in .pie files.
                 Zoom </br>
                 <input type="range" min="0" max="100" value="50" class="slider" id="Zoom"> </br>
                 Rotation Vertical </br>
-                <input type="range" min="0" max="100" value="0" class="slider" id="RotationX"> </br>
+                <input type="range" min="0" max="100" value="30" class="slider" id="RotationX"> </br>
                 Rotation Hor.
                 <input type="checkbox" id="renderContinous" name="renderContinous" value="Texture" checked="checked">
                 contin. </br>
@@ -173,6 +173,7 @@ are not supported in .pie files.
         textInput.value = client.responseText;
         reload_pie();
         displayTexture(true);
+        update();
       }
       client.send();
       console.log("init finished");
