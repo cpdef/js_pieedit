@@ -85,54 +85,56 @@ function update()
           color: '#33cc00',
           wireframeLinewidth: 5,
     });
-    var geometry = new THREE.Geometry();
-    //var geometry = window.engine.mesh.geometry;
-    geometry.vertices = [];
-    geometry.faces = [];
-    var level = 0; // TODO: loop levels
-    var points = window.LEVELS[level].points;
-    var polygons = window.LEVELS[level].polygons;
-
-    if (polygons[0] === undefined)
-      return;
-
-    for (var p=0;p < points.length;p++)
-    {
-      var point = points[p];
-      geometry.vertices.push(new THREE.Vector3(point[0], point[1], point[2]));
-    }
-
-    for (var polyidx=0;polyidx<polygons.length;polyidx++)
-    {
-      var poly = polygons[polyidx];
-      var po = poly.point_order;
-      geometry.faces.push(new THREE.Face3(po[0], po[1], po[2]));
-      var face = [];
-      for (var tp=0;tp<poly.texture_points.length;tp++)
-      {
-        var texture_point = poly.texture_points[tp];
-        face.push(new THREE.Vector2(
-          texture_point[0]/1024,
-          1-(texture_point[1]/1024)
-        ));
-      }
-      geometry.faceVertexUvs[0].push(face);
-    }
-    geometry.verticesNeedUpdate = true;
-    geometry.elementsNeedUpdate = true;
-    geometry.morphTargetsNeedUpdate = true;
-    geometry.uvsNeedUpdate = true;
-    geometry.normalsNeedUpdate = true;
-    geometry.colorsNeedUpdate = true;
-    geometry.tangentsNeedUpdate = true;
     var group = new THREE.Group();
-    if (edges)
-      group.add( new THREE.Mesh( geometry, materialWireframe) );
-    if (texture)
-      group.add( new THREE.Mesh( geometry, materialTexture) );
+    for (var level=0;level < window.LEVELS.length;level++)
+    {
+      var geometry = new THREE.Geometry();
+      if (window.LEVELS[level] === undefined)
+        break;
+      var points = window.LEVELS[level].points;
+      var polygons = window.LEVELS[level].polygons;
+
+      if (polygons[0] === undefined)
+        return;
+
+      for (var p=0;p < points.length;p++)
+      {
+        var point = points[p];
+        geometry.vertices.push(new THREE.Vector3(point[0], point[1], point[2]));
+      }
+
+      for (var polyidx=0;polyidx<polygons.length;polyidx++)
+      {
+        var poly = polygons[polyidx];
+        var po = poly.point_order;
+        geometry.faces.push(new THREE.Face3(po[0], po[1], po[2]));
+        var face = [];
+        for (var tp=0;tp<poly.texture_points.length;tp++)
+        {
+          var texture_point = poly.texture_points[tp];
+          face.push(new THREE.Vector2(
+            texture_point[0]/1024,
+            1-(texture_point[1]/1024)
+          ));
+        }
+        geometry.faceVertexUvs[0].push(face);
+      }
+      geometry.verticesNeedUpdate = true;
+      geometry.elementsNeedUpdate = true;
+      geometry.morphTargetsNeedUpdate = true;
+      geometry.uvsNeedUpdate = true;
+      geometry.normalsNeedUpdate = true;
+      geometry.colorsNeedUpdate = true;
+      geometry.tangentsNeedUpdate = true;
+      if (edges)
+        group.add( new THREE.Mesh( geometry, materialWireframe) );
+      if (texture)
+        group.add( new THREE.Mesh( geometry, materialTexture) );
+    }
     window.engine.scene.remove(window.engine.mesh);
     window.engine.mesh = group;
     window.engine.scene.add(window.engine.mesh);
     console.log("update");
 }
+
 

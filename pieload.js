@@ -13,6 +13,10 @@ function reload_pie() {
 	var point = -1;
 	var POLYGONS = -1;
 	var polygon = -1;
+	var ANIMFRAMES = -1;
+	var animframe = -1;
+	var CONNECTORS = -1;
+	var connector = -1;
 	lines = text.split("\n");
 	for (var i=0; i < lines.length; i++)
 	{
@@ -122,8 +126,45 @@ function reload_pie() {
 				if (polygon >= POLYGONS)
 					block = "toplevel";
 			}
+		} else if (block === "ANIMOBJECT")
+		{
+			if (cols[0] === "ANIMOBJECT")
+			{
+				ANIMFRAMES = Number(cols[3]);
+				animframe = 0;
+				LEVELS[LEVEL].animframes = new Array();
+			} else {
+				if (is_comment)
+				{
+					ANIMFRAMES--;
+					continue
+				}
+				// add animations here
+				animframe++;
+				if (animframe >= ANIMFRAMES)
+					block = "toplevel";
+			}
+		} else if (block === "CONNECTORS")
+		{
+			if (cols[0] === "CONNECTORS")
+			{
+				CONNECTORS = Number(cols[1]);
+				connector = 0;
+				LEVELS[LEVEL].connectors = new Array();
+			} else {
+				if (is_comment)
+				{
+					CONNECTORS--;
+					continue
+				}
+				// add connectors here
+				connector++;
+				if (connector >= CONNECTORS)
+					block = "toplevel";
+			}
 		}
 	}
+	console.log(LEVELS);
 	window.LEVELS = LEVELS;
 	window.PIE = PIE;
 }
