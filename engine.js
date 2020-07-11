@@ -1,9 +1,5 @@
 var cnv = document.getElementById("cnv"); //, ctx = cnv.getContext("2d");
 
-window.last_state = {
-    zoom:0, rotationX:0, rotationy:0, edges:0,
-    texture:0, grid:0, continous: 0
-}
 //window.TEX_DATA
 //import * as THREE from 'https://unpkg.com/three@0.118.3/build/three.module.js';
 
@@ -66,6 +62,7 @@ function update()
     var edges = document.getElementById("renderEdges").checked;
     var texture = document.getElementById("renderTexture").checked;
     var grid = document.getElementById("renderGrid").checked;
+    var animFrame = document.getElementById("animFrame").value / 10000;
 
     if (grid && (window.engine.grid === undefined))
     {
@@ -97,10 +94,22 @@ function update()
       if (polygons[0] === undefined)
         return;
 
+      var offset = new THREE.Vector3(0, 0, 0);
+      var animFrames = window.LEVELS[level].animframes;
+      if (animFrames !== undefined)
+      {
+        var frame = Math.floor((animFrames.length-1)*animFrame);
+        var pos = animFrames[frame].pos;
+        // bugfix for https://github.com/Warzone2100/warzone2100/issues/1022
+        offset = new THREE.Vector3(pos.x, pos.z, pos.y);
+        console.log(level, animFrames, animFrame, frame, offset);
+      }
+
       for (var p=0;p < points.length;p++)
       {
-        var point = points[p];
-        geometry.vertices.push(new THREE.Vector3(point[0], point[1], point[2]));
+        var point = new THREE.Vector3(points[p][0],points[p][1],-points[p][2]);
+        point.add(offset);
+        geometry.vertices.push(point);
       }
 
       for (var polyidx=0;polyidx<polygons.length;polyidx++)
